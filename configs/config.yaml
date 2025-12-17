@@ -1,0 +1,21 @@
+project_name: amazon-sales-mlops
+experiment_name: amazon_sales_experiments
+
+data:
+  raw_path: data/raw/amazon_sales.csv
+  processed_path: data/processed/amazon_sales_processed.parquet
+
+target:
+  column: TotalAmount
+
+paths:
+  processed_data: data/processed/amazon_sales_regression.csv
+
+training:
+  target_col: TotalAmount
+  test_size: 0.2
+  random_state: 42
+
+mlflow:
+  experiment_name: amazon_sales_regression
+  tracking_uri: null   # keep null for local ./mlruns; set a URI if using a remote server

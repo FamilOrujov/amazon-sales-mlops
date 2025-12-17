@@ -1,0 +1,5 @@
+regression:
+  run_id: 9c38d8f57d0944fbb965b2344b5117a4
+  model_uri: runs:/9c38d8f57d0944fbb965b2344b5117a4/model
+  metric: test_RMSE
+  value: 5.7635481172117675

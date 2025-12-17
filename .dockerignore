@@ -1,0 +1,45 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv
+venv
+ENV
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+.cursor
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+
+# Build
+*.egg-info
+dist
+build
+
+# Jupyter
+.ipynb_checkpoints
+notebooks/
+
+# Data (raw data - not needed for inference, but keep processed)
+data/raw/
+data/interim/
+# Note: data/processed/ is included (needed for model info)
+
+# Misc
+*.log
+.DS_Store
+Thumbs.db
+

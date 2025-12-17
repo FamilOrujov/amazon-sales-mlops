@@ -1,0 +1,4 @@
+# This file ensures the models/ directory is tracked by git
+# Model files (*.pkl, *.joblib, etc.) are ignored
+# Run training scripts to generate models locally
+

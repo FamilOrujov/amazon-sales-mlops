@@ -1,0 +1,48 @@
+services:
+  # FastAPI Prediction API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: amazon-sales-api
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Streamlit UI
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: amazon-sales-ui
+    ports:
+      - "8501:8501"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - API_URL=http://api:8000
+    command: ["python", "-m", "streamlit", "run", "src/amazon_sales_ml/ui/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # MLflow UI 
+  mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: amazon-sales-mlflow
+    ports:
+      - "5000:5000"
+    command: ["python", "-m", "mlflow", "ui", "--host", "0.0.0.0", "--port", "5000"]
+    restart: unless-stopped
+    profiles:
+      - full  # Only starts with: docker-compose --profile full up
+

@@ -1,0 +1,23 @@
+mlflow:
+  tracking_uri: null               # or "http://127.0.0.1:5000" if you run mlflow server
+  experiment_name: amazon_sales_regression
+
+registry:
+  
+  regression_model_name: amazon_sales_totalamount_regressor
+
+  # quality gates (adjusted to your model performance)
+  min_test_r2: 0.90                # minimum R2 score (high bar for good models)
+  max_test_rmse: 250.0             # maximum allowed RMSE
+  max_generalization_gap_pct: 150.0 # overfit guard - relaxed since absolute RMSE is excellent
+
+  # how many top models to register
+  register_top_k: 2
+
+  # aliases to assign
+  champion_alias: champion
+  challenger_alias: challenger
+
+metadata:
+  dataset_id: amazon_sales_regression_v1
+  data_path: data/processed/amazon_sales_regression.csv
