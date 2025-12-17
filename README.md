@@ -697,15 +697,4 @@ metadata:
 | **Package Management** | uv (Astral) |
 | **Testing** | pytest |
 
----
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
----
-
-<p align="center">
-  <strong>Built with ❤️ for the MLOps community</strong>
-</p>
 
