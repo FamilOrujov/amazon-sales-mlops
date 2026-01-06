@@ -235,7 +235,7 @@ docker-compose up
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -316,7 +316,7 @@ uv run python scripts/run_ui.py
 
 ---
 
-## 📊 Model Performance
+## Model Performance
 
 ### My Approach to Finding the Best Model
 
@@ -458,7 +458,7 @@ The champion/challenger pattern means I always have a backup. If something goes 
 
 ---
 
-## 📈 MLflow Experiment Tracking
+## MLflow Experiment Tracking
 
 ### Experiment Dashboard
 
@@ -575,7 +575,7 @@ Visit `http://localhost:8000/docs` for Swagger UI.
 
 ---
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### Using Docker Compose (Recommended)
 
@@ -617,7 +617,7 @@ docker-compose --profile full up
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Run Tests
 
@@ -639,7 +639,7 @@ uv run pytest tests/test_api.py
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 ### configs/config.yaml
 
@@ -682,7 +682,7 @@ metadata:
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Category | Technology |
 |----------|------------|
