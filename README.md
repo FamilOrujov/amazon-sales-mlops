@@ -487,7 +487,7 @@ uv run python scripts/run_mlflow_ui.py
 
 ---
 
-## 🔌 API Reference
+## API Reference
 
 ### Base URL
 
