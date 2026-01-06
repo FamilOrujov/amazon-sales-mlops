@@ -23,7 +23,7 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#-overview)
 - [Project Structure](#-project-structure)
@@ -40,7 +40,7 @@
 
 ---
 
-## 🎯 Overview
+## Overview
 
 **Amazon Sales MLOps** is a production-ready machine learning pipeline that predicts total sales amounts for e-commerce transactions. This project demonstrates industry-standard MLOps practices including:
 
@@ -182,16 +182,16 @@ amazon-sales-mlops/
 
 ---
 
-## ✨ Features
+## Features
 
-### 🔬 Experiment Tracking with MLflow
+### Experiment Tracking with MLflow
 
 - **Automatic logging** of all training runs
 - **Metric comparison** across experiments
 - **Artifact versioning** (models, plots, configs)
 - **Run search** and filtering
 
-### 🏆 Model Registry & Champion/Challenger Pattern
+### Model Registry & Champion/Challenger Pattern
 
 ```yaml
 # configs/registry.yaml
@@ -208,21 +208,21 @@ registry:
   challenger_alias: challenger  # Second-best for A/B testing
 ```
 
-### ⚡ FastAPI Prediction Service
+### FastAPI Prediction Service
 
 - **Single predictions** via `/predict`
 - **Batch predictions** via `/predict_batch`
 - **Model switching** between champion/challenger
 - **Auto-generated Swagger docs** at `/docs`
 
-### 🖥️ Streamlit Dashboard
+### Streamlit Dashboard
 
 - **Real-time predictions** with form inputs
 - **Batch upload** via CSV
 - **Model status** monitoring
 - **Champion/Challenger** selection
 
-### 🐳 Docker Ready
+### Docker Ready
 
 ```bash
 # Start all services
