@@ -105,3 +105,4 @@ tmp/
 temp/
 *.tmp
 *.bak
+configs/best_model.yaml
