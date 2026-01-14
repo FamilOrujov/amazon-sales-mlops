@@ -127,62 +127,77 @@ The pipeline implements industry standard MLOps practices through several interc
 
 ```
 amazon-sales-mlops/
-    configs/                       Configuration files
-        config.yaml               General settings
-        registry.yaml             Model registry and quality gates
-        best_model.yaml.example   Template for best model reference
-        best_model.yaml           Best model reference (auto generated, gitignored)
-
-    data/
-        raw/                      Original dataset
-            amazon_sales.csv
-        processed/                Feature engineered data
-            amazon_sales_regression.csv
-
-    models/
-        champion.pkl              Exported production model
-
-    mlruns/                       MLflow experiment artifacts
-
-    notebooks/
-        01_eda.ipynb             Exploratory Data Analysis
-        02_model_baselines.ipynb Model experimentation
-
-    scripts/                      Automation scripts
-        run_train.py             Model training pipeline
-        run_api.py               Start FastAPI server
-        run_ui.py                Start Streamlit UI
-        run_mlflow_ui.py         Start MLflow dashboard
-        register_best_models.py  Model registry automation
-        select_best_regression_run.py
-        export_model.py          Export model for Docker
-
-    src/amazon_sales_ml/          Main package
-        api/
-            app.py               FastAPI application
-        models/
-            train.py             Training logic
-            pipelines.py         Sklearn pipelines
-            evaluate.py          Evaluation utilities
-        mlflow_utils/
-            tracking.py          MLflow helpers
-        ui/
-            app.py               Streamlit main app
-            api_client.py        API client
-            views/               UI pages
-        config.py                Path configurations
-
-    tests/                        Unit tests
-        test_api.py
-        test_model.py
-
-    assets/                       Documentation images
-
-    Dockerfile
-    docker-compose.yml
-    pyproject.toml
-    requirements.txt
-    README.md
+├── README.md                              # This file
+├── requirements.txt                       # Python dependencies
+├── pyproject.toml                         # Project configuration
+├── uv.lock                                # Dependency lock file
+├── Dockerfile                             # Container definition
+├── docker-compose.yml                     # Multi-container orchestration
+│
+├── configs/                               # Configuration files
+│   ├── config.yaml                        # General settings
+│   ├── registry.yaml                      # Model registry and quality gates
+│   ├── best_model.yaml.example            # Template for best model reference
+│   └── best_model.yaml                    # Best model reference (gitignored)
+│
+├── data/
+│   ├── raw/                               # Original dataset
+│   │   └── amazon_sales.csv
+│   └── processed/                         # Feature engineered data
+│       └── amazon_sales_regression.csv
+│
+├── models/                                # Exported models
+│   └── champion.pkl                       # Production model (gitignored)
+│
+├── mlruns/                                # MLflow experiment artifacts (gitignored)
+│
+├── notebooks/                             # Jupyter notebooks
+│   ├── 01_eda.ipynb                       # Exploratory Data Analysis
+│   └── 02_model_baselines.ipynb           # Model experimentation
+│
+├── scripts/                               # Automation scripts
+│   ├── run_train.py                       # Model training pipeline
+│   ├── run_api.py                         # Start FastAPI server
+│   ├── run_ui.py                          # Start Streamlit UI
+│   ├── run_mlflow_ui.py                   # Start MLflow dashboard
+│   ├── register_best_models.py            # Model registry automation
+│   ├── select_best_regression_run.py      # Best model selection
+│   └── export_model.py                    # Export model for Docker
+│
+├── src/amazon_sales_ml/                   # Main package
+│   ├── __init__.py
+│   ├── config.py                          # Path configurations
+│   │
+│   ├── api/                               # REST API
+│   │   └── app.py                         # FastAPI application
+│   │
+│   ├── models/                            # ML components
+│   │   ├── train.py                       # Training logic
+│   │   ├── pipelines.py                   # Sklearn pipelines
+│   │   └── evaluate.py                    # Evaluation utilities
+│   │
+│   ├── mlflow_utils/                      # Experiment tracking
+│   │   └── tracking.py                    # MLflow helpers
+│   │
+│   └── ui/                                # Streamlit interface
+│       ├── app.py                         # Main app
+│       ├── api_client.py                  # API client
+│       └── views/                         # UI pages
+│           └── regression.py              # Regression view
+│
+├── tests/                                 # Unit tests
+│   ├── conftest.py                        # Test fixtures
+│   ├── test_api.py                        # API tests
+│   └── test_model.py                      # Model tests
+│
+└── assets/                                # Documentation images
+    ├── dashboard_ui.png                   # Streamlit UI screenshot
+    ├── mlops_pipeline_archt.png           # Pipeline architecture diagram
+    ├── pred_vs_true.png                   # Predictions vs true values plot
+    ├── residuals.png                      # Residual analysis plot
+    ├── train_vs_test_rmse.png             # Train vs test RMSE comparison
+    └── mlflow/
+        └── 01_runs_sorted_by_rmse_r2.png  # MLflow dashboard screenshot
 ```
 
 ### 2.2 Core Components
@@ -195,30 +210,9 @@ The project is organized around several key modules that work together to form t
 
 ### 3.1 Pipeline Overview
 
-```
-                               MLOps Pipeline                                  
-                                                                             
-    Data           Training         MLflow Tracking          
-    Processing     Pipeline         Metrics (RMSE, R2, MAE)   
-                                    Parameters                
-                                    Artifacts (model.pkl)     
-                                                          
-                                              |                 
-                                              v                 
-                                    Model Registry           
-                                    Quality Gates             
-                                    Champion/Challenger       
-                                    Version Control           
-                                              |                 
-                                              |
-            |-------------------------------------------------------------|
-            |                                                             |
-            v                                                             v
-    Streamlit         <--------- HTTP ---------->       FastAPI      
-    Dashboard                                           Prediction API  
-                                                                        
-                         Docker Container                        
-```
+![MLOps Pipeline Architecture](assets/mlops_pipeline_archt.png)
+
+*The complete MLOps pipeline showing data flow from processing through training, experiment tracking, model registry, and deployment via containerized FastAPI and Streamlit services.*
 
 ### 3.2 Data Flow
 
@@ -402,7 +396,7 @@ This visualization was the first one created, and it immediately revealed import
 
 The goal was to find short bars indicating low error that were roughly the same height for both train and test sets. Such a pattern would indicate a model that is both accurate and generalizes well to unseen data.
 
-**Linear Regression** shows two tall bars sitting at nearly identical heights, around $217 error for both train and test. At first glance, this consistency might seem positive. However, this is actually the problem: the model is consistently bad. It is not overfitting; it is underfitting. Linear Regression assumes relationships between features and target are linear, but sales amounts do not work that way. Discounts kick in at certain quantities, taxes multiply with price, shipping costs vary by weight tiers. A straight line cannot capture any of these dynamics. The model is simply too simple for real world complexity.
+**Linear Regression** shows two tall bars sitting at nearly identical heights, around $217 error for both train and test. At first glance, this consistency might seem positive. However, this is actually the problem: the model is consistently bad. It is not overfitting, it is underfitting. Linear Regression assumes relationships between features and target are linear, but sales amounts do not work that way. Discounts kick in at certain quantities, taxes multiply with price, shipping costs vary by weight tiers. A straight line cannot capture any of these dynamics. The model is simply too simple for real world complexity.
 
 **Random Forest** caught attention for troubling reasons. The gap between train RMSE around $51 and test RMSE shooting up to $130 is classic overfitting. Random Forest built hundreds of decision trees that together memorized the training data beautifully, but when shown new orders it had never seen, it stumbled. Those trees learned the quirks and noise of the training set rather than true underlying patterns. In production, this model would provide false confidence.
 
@@ -436,7 +430,7 @@ Prediction accuracy matters, but understanding how each model fails provides dee
 
 Residuals, calculated as true value minus predicted value, are plotted against predicted values. In an ideal scenario, a random scatter of points centered on zero with no patterns would appear. Any shapes or trends indicate the model has blind spots.
 
-**Linear Regression** in the top left reveals the fundamental problem. Residuals form a distinctive bowtie shape, fanning out from center. Errors range from negative $600 to positive $1,000 depending on prediction range. More importantly, there is a clear curved pattern. For mid range predictions between $500 and $1,500, the model systematically underestimates. For very high predictions, errors swing wildly in both directions. This is not random noise; it is structural failure. The model literally cannot capture the true relationship because it is constrained to be linear.
+**Linear Regression** in the top left reveals the fundamental problem. Residuals form a distinctive bowtie shape, fanning out from center. Errors range from negative $600 to positive $1,000 depending on prediction range. More importantly, there is a clear curved pattern. For mid range predictions between $500 and $1,500, the model systematically underestimates. For very high predictions, errors swing wildly in both directions. This is not random noise, it is structural failure. The model literally cannot capture the true relationship because it is constrained to be linear.
 
 **Random Forest** in the top right shows a concerning funnel shape. The spread of residuals grows wider as predictions increase. This is called heteroscedasticity, meaning model reliability changes depending on price range. For a $500 prediction, errors are relatively contained. For a $2,500 prediction, errors could range from negative $400 to positive $1,000. This inconsistency would make the model frustrating in practice.
 
@@ -448,7 +442,7 @@ Residuals, calculated as true value minus predicted value, are plotted against p
 
 After observing these results, understanding why XGBoost performed so much better than alternatives became important.
 
-**The gradient boosting approach matters.** XGBoost does not build just one model; it builds hundreds of small decision trees in sequence. Each new tree specifically focuses on mistakes the previous trees made. It functions like a team where each member specializes in fixing what others got wrong. This iterative error correction is incredibly powerful for capturing complex patterns.
+**The gradient boosting approach matters.** XGBoost does not build just one model, it builds hundreds of small decision trees in sequence. Each new tree specifically focuses on mistakes the previous trees made. It functions like a team where each member specializes in fixing what others got wrong. This iterative error correction is incredibly powerful for capturing complex patterns.
 
 **Built in regularization prevents memorization.** Unlike Random Forest, XGBoost includes L1 and L2 regularization that penalizes overly complex trees. This acts as a brake, preventing the model from fitting every tiny fluctuation in training data. This explains why the XGBoost train to test gap is reasonable while the Random Forest gap is huge.
 
@@ -481,7 +475,7 @@ The champion challenger pattern means a backup is always available. If something
 
 ### 6.8 Key Learnings from the Experiment
 
-**XGBoost earned its reputation.** With R2 of 0.9999 and RMSE of just $5.76, this model delivers predictions trustworthy enough for real business decisions. Residual analysis confirms no hidden problems exist; errors are small and random.
+**XGBoost earned its reputation.** With R2 of 0.9999 and RMSE of just $5.76, this model delivers predictions trustworthy enough for real business decisions. Residual analysis confirms no hidden problems exist, errors are small and random.
 
 **Good training performance means nothing without test validation.** Random Forest looked impressive during training with RMSE of $51, but fell apart on test data. Deploying based on training metrics alone would have shipped a fundamentally unreliable model.
 
