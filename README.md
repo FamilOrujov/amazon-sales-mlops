@@ -25,7 +25,7 @@
 
 ---
 
-## Table of Contents
+## Table of Contents.
 
 1. [Overview](#1-overview)
    - 1.1 [The Business Problem](#11-the-business-problem)
